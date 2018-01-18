@@ -1,0 +1,13 @@
+{
+  "name": "Email",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:alonehover/Email.git",
+  "author": "Jose <puhongwu@live.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.4.1",
+    "koa-router": "^7.3.0",
+    "nodemailer": "^4.4.1"
+  }
+}
