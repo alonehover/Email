@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const Router = require('koa-router');
+const bodyParser = require('koa-bodyparser');
 
 const config = require('./config.json');
 const Email = require('./email');
@@ -23,18 +24,50 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms}`);
 });
 
+app.use(bodyParser());
+
 router.get('/', (ctx, next) => {
     ctx.body = {
         code: 'send email'
     }
 });
 
-router.post('/send', (ctx, next) => {
+router.post('/send', async (ctx, next) => {
+    const data = ctx.request.body;
+    const verify = ["from", "to", "subject"];
+
+    for (const item of verify) {
+        if(data[item] === "" || data[item] === undefined) {
+            ctx.body = {
+                code: 500,
+                message: "缺少参数" + item
+            }
+            return;
+        }
+    }
+
+    try {
+        const info = await Email({
+            from: data.from,
+            to: data.to,
+            subject: data.subject,
+            text: data.text || '',
+            html: data.html || '',
+        });
+    } catch (error) {
+        ctx.body = {
+            code: error.responseCode,
+            res: error.response
+        }
+
+        return;
+    }
+
     ctx.body = {
-        code: 1
+        code: 0
     }
 });
-  
+
 app
 .use(router.routes())
 .use(router.allowedMethods());

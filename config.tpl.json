@@ -1,0 +1,13 @@
+{
+    "port": 8000,
+    "transport": {
+        "host": "",
+        "secureConnection": true,
+        "port": 465,
+        "secure": true,
+        "auth": {
+            "user": "",
+            "pass": ""
+        }
+    }
+}
