@@ -32,7 +32,7 @@ app.use(async (ctx, next) => {
 app.use(bodyParser());
 
 router.get('/', (ctx, next) => {
-    ctx.body = {
+    return ctx.body = {
         code: 'send email'
     }
 });
@@ -40,19 +40,17 @@ router.get('/', (ctx, next) => {
 router.post('/send', async (ctx, next) => {
     const data = ctx.request.body;
     const verify = ["from", "to", "subject"];
-
     for (const item of verify) {
         if(data[item] === "" || data[item] === undefined) {
-            ctx.body = {
+            return ctx.body = {
                 code: 500,
                 message: "缺少参数" + item
-            }
-            return;
+            };
         }
     }
 
     try {
-        const info = await Email({
+        return ctx.body = await Email({
             from: data.from,
             to: data.to,
             subject: data.subject,
@@ -60,15 +58,13 @@ router.post('/send', async (ctx, next) => {
             html: data.html || '',
         });
     } catch (error) {
-        ctx.body = {
+        return ctx.body = {
             code: error.responseCode,
             res: error.response
         }
-
-        return;
     }
 
-    ctx.body = {
+    return ctx.body = {
         code: 0
     }
 });
